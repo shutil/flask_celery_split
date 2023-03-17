@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+service Post{
+    rpc PostExist (PostExistRequest) returns (PostExistReply);
+}
+
+message PostExistRequest {
+    int64 id = 1;
+}
+
+message PostExistReply {
+    bool exist = 1;
+}
+
+// python -m grpc_tools.protoc -I ./grpc/proto --python_out=./grpc_output --grpc_python_out=./grpc_output ./grpc/proto/main.proto

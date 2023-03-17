@@ -1,0 +1,65 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_vol:/var/lib/mysql/
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    environment:
+      - PMA_HOST=mysql
+    depends_on:
+      - mysql
+    ports:
+      - 5000:80
+
+  post:
+    build: ./Post/
+    container_name: "Post"
+    ports:
+      - 8000:8000
+    volumes:
+      - ./Post:/app
+
+  post_worker:
+    build: ./Post/
+    entrypoint: "celery -A main.celery worker --loglevel=info"
+    volumes:
+      - ./Post:/app
+
+  post_grpc_server:
+    build: ./Post/
+    entrypoint: "python3 grpc_server.py"
+    expose:
+      - 8000
+    volumes:
+      - ./Post:/app
+
+
+  comment:
+    build: ./Comment/
+    container_name: "Comment"
+    ports:
+      - 8001:8001
+    volumes:
+      - ./Comment:/app
+
+  comment_worker:
+    build: ./Comment/
+    entrypoint: "celery -A main.celery worker --loglevel=info"
+    volumes:
+      - ./Comment:/app
+
+volumes:
+  mysql_vol:

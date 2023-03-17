@@ -1,0 +1,1 @@
+from .func import create_post, update_post, delete_post
