@@ -57,7 +57,7 @@ services:
 
   comment_worker:
     build: ./Comment/
-    entrypoint: "celery -A main.celery worker --loglevel=info"
+    entrypoint: "celery -A main.celery worker -Q queue1 --loglevel=info"
     volumes:
       - ./Comment:/app
 

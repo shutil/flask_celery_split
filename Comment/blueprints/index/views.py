@@ -53,5 +53,5 @@ def delete(id):
 def task_result(id):
     res = AsyncResult(id=id,app=celery)
     print(res.status)
-    print(res)
+    print(res.__dict__)
     return jsonify({'task_result':res.status})

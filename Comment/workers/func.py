@@ -6,7 +6,7 @@ from celery import Celery
 
 clry = Celery(broker=app.config['CELERY_BROKER_URL'],backend=app.config['CELERY_RESULT_BACKEND'])
 
-@clry.task()
+@clry.task(queue='queue1')
 def create_comment(comment_text,post_id,user_id):
     with app.app_context():
         cmt = Comment(comment_text=comment_text,post_id=post_id,user_id=user_id)
@@ -15,7 +15,7 @@ def create_comment(comment_text,post_id,user_id):
         
         return cmt.id
 
-@clry.task()
+@clry.task(queue='queue1')
 def update_comment(id,comment_text):
     with app.app_context():
         chk = Comment.query.filter_by(id=id).first()
@@ -23,7 +23,7 @@ def update_comment(id,comment_text):
         db.session.commit()
         return chk.id
 
-@clry.task()
+@clry.task(queue='queue1')
 def delete_comment(id):
     with app.app_context():
         dl = Comment.query.filter_by(id=id).first()
